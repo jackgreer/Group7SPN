@@ -27,7 +27,7 @@ pi_p = [0, 3, 4, 1, 2, 5]
 
 # Instantiate table with minimum normalized values (maximum number of matches is 8,
 # so default to 0 - 4)
-normalized_linear_approx_table = [[-4 for x in range(7)] for y in range(7)]
+normalized_linear_approx_table = [[-4 for x in range(8)] for y in range(8)]
 
 # For each input_sum in range (0, 7)
 #   For each output_sum in range (0, 7)
@@ -38,9 +38,9 @@ normalized_linear_approx_table = [[-4 for x in range(7)] for y in range(7)]
 #           if(parity_dict[masked_input] == parity_dict[]):
 #               normalized_linear_approx_table[input_sum][output_sum] += 1
 
-for input_sum in range(7):
-    for output_sum in range(7):
-        for input_code in range(7):
+for input_sum in range(8):
+    for output_sum in range(8):
+        for input_code in range(8):
             output_code = pi_s[input_code]
             # TODO: Consider renaming these variables, this might not make intuitive sense
             masked_input = input_code & input_sum
