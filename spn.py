@@ -34,20 +34,22 @@ cipher_lin_attack_list = ["100100", "110010", "111001", "011101", "001101", "101
 # so default to 0 - 4)
 normalized_linear_approx_table = [[-4 for x in range(8)] for y in range(8)]
 
+# Iterating through each input and output sum pair in the table
 for input_sum in range(8):
     for output_sum in range(8):
         for input_code in range(8):
+            # Grab output from S-box
             output_code = pi_s[input_code]
             
-            # 
+            # Mask the input and output codes
             masked_input = input_code & input_sum
             masked_output = output_code & output_sum
             
+            # Increment value in table if masked input and masked output agree
             if(parity_dict[masked_input] == parity_dict[masked_output]):
-                # 
                 normalized_linear_approx_table[input_sum][output_sum] += 1
 
-print("This is the normalized approximation table for this SPN:")
+print("This is the normalized linear approximation table for this SPN (input sums along y-axis, output sums along x-axis):")
 # Print the table out with headers marking rows and columns
 print(tabulate(normalized_linear_approx_table,\
                 headers=[x for x in range(8)],\
@@ -79,34 +81,26 @@ print(tabulate(normalized_linear_approx_table,\
 
 count = [0 for x in range(8)]
 for k_guess in range(8):
-    # print("Guess for K (first 3 bits): " + str(k_guess))
     for pair_index in range(6):
         plaintext = plain_lin_attack_list[pair_index]
         ciphertext = cipher_lin_attack_list[pair_index]
 
         plain_first_half = plaintext[:3]
         plain_second_half = plaintext[3:]
-        # print("Plain: " + plain_first_half + " " + plain_second_half)
 
         cipher_first_half = ciphertext[:3]
         cipher_second_half = ciphertext[3:]
-        # print("Cipher: " + cipher_first_half + " " + cipher_second_half)
 
-        # these are both strings, so convert them to binary numbers
-        # plain_bin = string_to_bin_num[plaintext]
-        # cipher_bin = string_to_bin_num[cipher_first_half]
         j = k_guess ^ string_to_bin_num[cipher_first_half]
         
         h = pi_s_inv[j]
         # first bit of h will be the same as h >> 2 if we want to be cute about it
         h_1 = (h & 4) >> 2
-        # print("H1: " + str(h_1))\
-            
+        
         #  compute sum = p_1 XOR p_2 XOR p_4 XOR p_5 XOR h_1
         sum = parity_dict[string_to_bin_num[plain_first_half] & 0b110] ^ \
                 parity_dict[string_to_bin_num[plain_second_half] & 0b110] ^ \
                 h_1
-        # print("Sum: " + str(sum))
         
         if(sum == 0):
             count[k_guess] += 1
