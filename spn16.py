@@ -3,6 +3,7 @@
 # Date: 6 Nov 2022 (Date Last Modified: 6 Nov 2022, Jack Greer)
 # Description: This file contains a Python algorithm that performs a linear attack
 # on the "Baby SPN" and partially finds the key.
+from tabulate import tabulate
 
 # This dict contains the corresponding XOR values for the numbers 0b000 through 0b111
 # Could be a list
@@ -56,5 +57,6 @@ for input_sum in range(16):
                 normalized_linear_approx_table[input_sum][output_sum] += 1
 
 # TODO: print the table out, with headers marking rows and columns
-for row in range(16):
-    print(normalized_linear_approx_table[row])
+print(tabulate(normalized_linear_approx_table,\
+                headers=[x for x in range(16)],\
+                    tablefmt="fancy_grid", showindex="always"))
