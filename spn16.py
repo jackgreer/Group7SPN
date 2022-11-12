@@ -6,22 +6,22 @@
 
 # This dict contains the corresponding XOR values for the numbers 0b000 through 0b111
 # Could be a list
-parity_dict = {0b000: 0, 0b001: 1, 0b010: 1, 0b011: 0,\
-               0b100: 1, 0b101: 0, 0b110: 0, 0b111: 1}
+parity_dict = {0b0000: 0, 0b0001: 1, 0b0010: 1, 0b0011: 0,\
+               0b0100: 1, 0b0101: 0, 0b0110: 0, 0b0111: 1,\
+                0b1000: 1, 0b1001: 0, 0b1010: 0, 0b1011: 1,\
+                0b1100: 0, 0b1101: 1, 0b1110: 1, 0b1111: 0}
 
 # There's gotta be a better way to do this data structure ngl
 # Doing a dict for clarity, consider a regular list
-pi_s = {0b000: 0b110, 0b001: 0b101, 0b010: 0b001, 0b011: 0b000,\
-        0b100: 0b011, 0b101: 0b010, 0b110: 0b111, 0b111: 0b100}
+pi_s = {0x0: 0xE, 0x1: 0x4, 0x2: 0xD, 0x3: 0x1,\
+        0x4: 0x2, 0x5: 0xF, 0x6: 0xB, 0x7: 0x8,\
+        0x8: 0x3, 0x9: 0xA, 0xA: 0x6, 0xB: 0xC,\
+        0xC: 0x5, 0xD: 0x9, 0xE: 0x0, 0xF: 0x7}
 
-pi_s_inv = {0b000: 0b011, 0b001: 0b010, 0b010: 0b101, 0b011: 0b100,\
-            0b100: 0b111, 0b101: 0b001, 0b110: 0b000, 0b111: 0b110}
-
-bin_num_to_string = {0: "000", 1: "001", 2: "010", 3: "011",\
-                    4: "100", 5: "101", 6: "110", 7: "111"}
-
-string_to_bin_num = {"000": 0, "001": 1, "010": 2, "011": 3,\
-                    "100": 4, "101": 5, "110": 6, "111": 7}
+pi_s_inv = {0x0: 0xE, 0x1: 0x3, 0x2: 0x4, 0x3: 0x8,\
+            0x4: 0x1, 0x5: 0xC, 0x6: 0xA, 0x7: 0xF,\
+            0x8: 0x7, 0x9: 0xD, 0xA: 0x9, 0xB: 0x6,\
+            0xC: 0xB, 0xD: 0x2, 0xE: 0x0, 0xF: 0x5}
 
 # Note the permutation network is involutary, so it's its own inverse
 # Also NOTE THIS IS ZERO-INDEXED, WHILE THE CLASS EXAMPLES/FIGURE IN THE PROJECT SPEC
@@ -33,7 +33,7 @@ pi_p = [0, 3, 4, 1, 2, 5]
 
 # Instantiate table with minimum normalized values (maximum number of matches is 8,
 # so default to 0 - 4)
-normalized_linear_approx_table = [[-4 for x in range(8)] for y in range(8)]
+normalized_linear_approx_table = [[-8 for x in range(16)] for y in range(16)]
 
 # For each input_sum in range (0, 7)
 #   For each output_sum in range (0, 7)
@@ -44,9 +44,9 @@ normalized_linear_approx_table = [[-4 for x in range(8)] for y in range(8)]
 #           if(parity_dict[masked_input] == parity_dict[]):
 #               normalized_linear_approx_table[input_sum][output_sum] += 1
 
-for input_sum in range(8):
-    for output_sum in range(8):
-        for input_code in range(8):
+for input_sum in range(16):
+    for output_sum in range(16):
+        for input_code in range(16):
             output_code = pi_s[input_code]
             # TODO: Consider renaming these variables, this might not make intuitive sense
             masked_input = input_code & input_sum
@@ -56,6 +56,5 @@ for input_sum in range(8):
                 normalized_linear_approx_table[input_sum][output_sum] += 1
 
 # TODO: print the table out, with headers marking rows and columns
-for row in range(8):
+for row in range(16):
     print(normalized_linear_approx_table[row])
-
