@@ -1,6 +1,6 @@
 # Filename: spn.py
 # Author: MATH 4175 Group 7 (Andrew Tran, Anthony Tran, Jack Greer, Jason Pak, Michael Peters)
-# Date: 6 Nov 2022 (Date Last Modified: 12 Nov 2022)
+# Date: 6 Nov 2022 (Date Last Modified: 13 Nov 2022)
 # Description: This file contains a Python algorithm that performs a linear attack
 # on the "Baby SPN" and partially finds the fourth-round key K_4. 
 # We are not given enough plaintext/ciphertext pairs to determine the full key; only the first
@@ -61,8 +61,8 @@ print(tabulate(normalized_linear_approx_table,\
 # we're done
 
 # I have this on paper right now, but the bias is determined as follows:
-# 4 active s-boxes, each of which has bias -1/2 ((N_L(6, 4) - 4)/8)
-# Then the total bias is 2^(4 - 1) * (-1/2)^4 = 8 / 16 = 1 / 2
+# 3 active s-boxes, each of which has bias -1/2 ((N_L(6, 4) - 4)/8)
+# Then the total bias is 2^(3 - 1) * (-1/2)^3 = -4 / 8 = -1 / 2
 
 # Launch attack: For K^4_1, K^4_2, K^4_3 in range (0b000, 0b111):
 # Set count = 0
@@ -75,10 +75,9 @@ print(tabulate(normalized_linear_approx_table,\
 
 # MOST guesses for K^4_1, K^4_2, K^4_3 will have a count of |plaintext-ciphertext pairs| / 2
 # in our case, we have 3 pairs, so most guesses will have a count of 3
-# the correct guess will have a count of (6 / 2)(1 +- bias(trail)) = 3(1 +- 1/2) = 3/2, 9/2
-# so the correct guess will probably have a count of 2 or 4
-# I bet one guess will be 2, one will be 4, and the rest will be 3
-
+# the correct guess will have a count of (6 / 2)(1 +- bias(trail)) = 3(1 -+ 1/2) = 3/2, 9/2
+# We will find the correct guess(es) by finding the MAXIMUM difference from 3, as
+# detailed in slide deck 4.3
 count = [0 for x in range(8)]
 for k_guess in range(8):
     for pair_index in range(6):
@@ -94,7 +93,7 @@ for k_guess in range(8):
         j = k_guess ^ string_to_bin_num[cipher_first_half]
         
         h = pi_s_inv[j]
-        # first bit of h will be the same as h >> 2 if we want to be cute about it
+        # Grab the first bit of H
         h_1 = (h & 4) >> 2
         
         #  compute sum = p_1 XOR p_2 XOR p_4 XOR p_5 XOR h_1
